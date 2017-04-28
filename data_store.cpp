@@ -141,7 +141,7 @@ void Data_Store::initialize_map(){
 	}
 
 	
-	print_map();
+	//print_map();
 }
 
 void Data_Store::initialize_vision(){
