@@ -24,8 +24,8 @@ class Map {
     const static int default_map_cols = 300;
     const static int default_map_rows = 300;
     const static int default_vision_radius = 5;
-    const static int default_actor_half_rows = 2;
-    const static int default_actor_half_cols = 2;
+    const static int default_actor_half_rows = 0;
+    const static int default_actor_half_cols = 0;
     const static int R = 0;
     const static int G = 1;
     const static int B = 2;

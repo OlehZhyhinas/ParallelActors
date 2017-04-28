@@ -24,9 +24,9 @@
 #include <thread>
 #include <SFML/Graphics.hpp>
 
-bool debug   = false;
+bool debug   = true;
 bool gui     = true;
-int sleep_ms = 0;
+int sleep_ms = 150;
 
 int sock;
 struct sockaddr_in server_addr , client_addr;

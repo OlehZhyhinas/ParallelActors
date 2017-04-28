@@ -16,6 +16,7 @@
 #include "PDUConstants.h"
 #include "NetworkHelpers.h"
 #include "Coordinate.h"
+#include "AI.h"
 #include <iostream>
 #include <string>
 #include <chrono>
@@ -33,6 +34,7 @@ Coordinate destination;
 int vision_grid_size;
 int step_size;
 std::string id;
+int move_id=0;
 
 int sequence = 0;;
 bool collided = false;
@@ -41,6 +43,23 @@ bool timeout  = false;
 char vision[BUFLEN];
 
 Coordinate next_move;
+AI* ai;
+int sizex=300;
+int sizey=300;
+int vision_radius=5;
+
+void initialize_AI(){
+	ai = new AI();
+	ai->initialize_data_store(sizex,sizey,0,0,vision_radius);
+	ai->initialize_results();
+	ai->initialize_mod_master();
+	ai->initialize_evaluation();
+	ai->launch_window();
+
+
+
+}
+
 
 bool IsRightSequence(char sequence_num){
   if ((int)sequence_num == sequence){
@@ -72,6 +91,7 @@ void SetPosFromPDU(char * PDU, int row_index, int col_index, int field_len){
 void SetDestFromPDU(char * PDU, int row_index, int col_index, int field_len){
   destination.set_row(StoI(GetField(row_index, PDU, field_len)));
   destination.set_col(StoI(GetField(col_index, PDU, field_len)));
+  ai->set_destination(destination.get_col(), destination.get_row());
 }
 
 void SetVision(char * PDU){
@@ -97,7 +117,7 @@ void PrintAttributes(){
 }
 
 void DecideNextMove(char * vision, Coordinate position){
-  // TODO: Implement actual control logic
+  /*// TODO: Implement actual control logic
   // rudimentary control logic -- just moves towards destination
   int diff;
   if (position.get_row() != destination.get_row()){
@@ -111,7 +131,17 @@ void DecideNextMove(char * vision, Coordinate position){
   }else{
     next_move.set_row(position.get_row());
     next_move.set_col(position.get_col());
-  }
+  }*/
+  
+  //printf("Current location is at %d, %d at move #%d\n", position.get_col(), position.get_row(), move_id++);
+  ai->set_location(position.get_col(), position.get_row());	
+  ai->set_vision_data(vision);
+  ai->get_move();
+  next_move.set_col(ai->d->next_move[0]);
+  next_move.set_row(ai->d->next_move[1]);
+  //printf("movement to %d, %d\n", next_move.get_col(), next_move.get_row());
+  ai->show_field();
+  ai->show_vision();
 }
 
 char * RegisterPDU(){
@@ -183,11 +213,15 @@ void ParseServerPDU(char * PDU){
   }
 }
 
+
+
 int main(int argc, char *argv[])
 {
   struct hostent *host;
   const char *input_host = "localhost";
   const char *service = "3000";
+  initialize_AI();
+
 
   switch (argc) {
     case 1:
@@ -210,7 +244,7 @@ int main(int argc, char *argv[])
 
   if ((sock = socket(AF_INET, SOCK_DGRAM, 0)) == -1)
   {
-    perror("socket");
+    perror("socket"); 
     exit(1);
   }
 

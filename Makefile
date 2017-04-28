@@ -18,7 +18,9 @@ server: Server.cpp
 	${CPP} NetworkHelpers.cpp Server.cpp Map.cpp Actor.cpp Coordinate.cpp -o server ${CFLAGS} -pthread
 
 client: Client.cpp
-	${CPP} ${CFLAGS} NetworkHelpers.cpp Coordinate.cpp Client.cpp -o client
+	${CPP} NetworkHelpers.cpp Coordinate.cpp Client.cpp AI.cpp data_store.cpp evaluation.cpp mod_master.cpp results.cpp -o client ${CFLAGS}
+
+
 
 clean:
 	-rm -f ${TARGETS}
